@@ -38,6 +38,8 @@ class UpdateBankListCommand extends Command {
 	public function handle() {
 		$handler = new BankEnquiry;
 
+		$this->seedAllBanks($handler);
+
 		$dataList = $handler->getData();
 		$dataStr = $handler->stringifyData($dataList);
 
@@ -56,7 +58,7 @@ class UpdateBankListCommand extends Command {
 
 			foreach ($bankList as $key => $status) {
 				$bankId = explode(" - ", $key)[1];
-				$bank = $handler->getBank($bankId);
+				$bank = $handler->getBanks($bankId);
 
 				Bank::updateOrCreate(['bank_id' => $bankId], [
 					'status' => $status == 'A' ? 'Online' : 'Offline',
@@ -68,12 +70,25 @@ class UpdateBankListCommand extends Command {
 			}
 
 			$bar->finish();
+			$this->newLine();
 		} catch (\Exception $e) {
 			logger("Bank Updating failed", [
 				'message' => $e->getMessage(),
 			]);
 			$this->error("request failed due to" . $e->getMessage());
 			throw $e;
+		}
+	}
+
+	public function seedAllBanks(BankEnquiry $handler){
+		$banks = $handler->getBanks();	
+
+		foreach($banks as $bank){
+			Bank::updateOrCreate(['bank_id' => $bank['bank_id']], [
+				'status' => 'Offline',
+				'name' => $bank['name'],
+				'short_name' => $bank['short_name']
+			]);
 		}
 	}
 }

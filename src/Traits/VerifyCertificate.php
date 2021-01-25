@@ -73,6 +73,7 @@ trait VerifyCertificate {
 	 */
 	public function getPublicKeyCert(): string {
 		list($disk, $dir) = $this->getCertLocation();
+
 		$filename = $this->exchangeId . '.key';
 
 		return Storage::disk($disk)->get($dir . '/' . $filename);
@@ -88,7 +89,7 @@ trait VerifyCertificate {
 		$disk = Config::get('fpx.certificates.uat.disk');
 		$dir = Config::get('fpx.certificates.uat.dir');
 
-
+		
 		if (App::environment('production')) {
 			$disk = Config::get('fpx.certificates.production.disk');
 			$dir = Config::get('fpx.certificates.production.dir');

@@ -129,7 +129,7 @@ class BankEnquiry extends FPX {
 	/**
 	 * Banks List
 	 */
-	public function getBank($id) {
+	public function getBanks($id = null) {
 		$banks = collect([
 			[
 				"bank_id" => "ABB0233",
@@ -254,6 +254,10 @@ class BankEnquiry extends FPX {
 		]);
 
 		$banks = $banks->merge($this->getTestingBanks());
+		
+		if(is_null($id)){
+			return $banks;
+		}
 
 		return $banks->firstWhere('bank_id', $id);
 	}
@@ -262,6 +266,9 @@ class BankEnquiry extends FPX {
 		if (App::environment('production')) {
 			return [];
 		}
+
+		
+
 		return [
 			[
 				"bank_id" => "ABB0234",
