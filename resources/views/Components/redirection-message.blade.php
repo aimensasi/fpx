@@ -1,1 +1,0 @@
-{{ $slot ?? 'Redirecting To FPX' }}

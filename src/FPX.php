@@ -54,16 +54,14 @@ class FPX {
 	 * 03 = B2B2
 	 */
 	public $flow;
+	public const FLOW_B2C = '01';
+	public const FLOW_B2B1 = '02';
+	public const FLOW_B2B2 = '03';
 
 	/**
 	 * FPX used Verision
 	 */
 	public $version;
-
-	/**
-	 * Checksum code used to verify the validity of the transaction
-	 */
-	public $checkSum;
 
 	/**
 	 * Currency
@@ -158,6 +156,7 @@ class FPX {
 	public function __construct() {
 		$this->id = Str::random(12);
 		$this->bankCode = Config::get('fpx.bank_code');
+		$this->flow = self::FLOW_B2C;
 		$this->exchangeId = Config::get('fpx.exchange_id');
 		$this->sellerId = Config::get('fpx.seller_id');
 		$this->currency = Config::get('fpx.currency');

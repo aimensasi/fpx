@@ -24,7 +24,7 @@ trait VerifyCertificate {
 		list($disk, $dir) = $this->getCertLocation();
 
 		$signature = $this->decodeSignature($checkSum);
-		$certificate = Storage::disk($disk)->get($dir . '/' . 'certificate');
+		$certificate = Storage::disk($disk)->get($dir . '/' . 'certificate.cer');
 
 		if ($this->isExpired($certificate) || !$this->isValid($certificate, $signature, $data)) {
 			throw new InvalidCertificateException;
@@ -63,7 +63,7 @@ trait VerifyCertificate {
 		$info = openssl_x509_parse($certificate);
 		$expiryDate = Carbon::createFromTimestampUTC($info['validTo_time_t']);
 
-		return $expiryDate->isFuture();
+		return $expiryDate->isPast();
 	}
 
 	/**
@@ -73,7 +73,7 @@ trait VerifyCertificate {
 	 */
 	public function getPublicKeyCert(): string {
 		list($disk, $dir) = $this->getCertLocation();
-		$filename = $this->client->exchangeId . '.key';
+		$filename = $this->exchangeId . '.key';
 
 		return Storage::disk($disk)->get($dir . '/' . $filename);
 	}
@@ -85,13 +85,13 @@ trait VerifyCertificate {
 	 * @return array
 	 */
 	public function getCertLocation(): array {
-		$disk = Config::get('certificates.uat.disk');
-		$dir = Config::get('certificates.uat.dir');
+		$disk = Config::get('fpx.certificates.uat.disk');
+		$dir = Config::get('fpx.certificates.uat.dir');
 
 
 		if (App::environment('production')) {
-			$disk = Config::get('certificates.production.disk');
-			$dir = Config::get('certificates.production.dir');
+			$disk = Config::get('fpx.certificates.production.disk');
+			$dir = Config::get('fpx.certificates.production.dir');
 		}
 
 		return [$disk, $dir];

@@ -2,8 +2,11 @@
 
 namespace Aimensasi\FPX;
 
-use App\View\Components\PayComponent;
+use Aimensasi\FPX\Commands\UpdateBankListCommand;
+use Aimensasi\FPX\View\Components\PayComponent;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class FPXServiceProvider extends ServiceProvider {
@@ -14,35 +17,39 @@ class FPXServiceProvider extends ServiceProvider {
 		/*
 		* Optional methods to load your package assets
 		*/
-		// $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'FPX');
+		// $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'fpx');
 
-		$this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+		Route::group($this->routeConfiguration(), function () {
+			$this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+		});
 		$this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 		$this->loadViewsFrom(__DIR__ . '/../resources/views', 'fpx');
 		$this->configureComponents();
 
 		if ($this->app->runningInConsole()) {
 			$this->publishes([
-				__DIR__ . '/../config/config.php' => config_path('FPX.php'),
+				__DIR__ . '/../config/config.php' => config_path('fpx.php'),
 			], 'config');
 
 			// Publishing the views.
 			/*$this->publishes([
-                __DIR__.'/../resources/views' => resource_path('views/vendor/FPX'),
+                __DIR__.'/../resources/views' => resource_path('views/vendor/fpx'),
             ], 'views');*/
 
 			// Publishing assets.
 			/*$this->publishes([
-                __DIR__.'/../resources/assets' => public_path('vendor/FPX'),
+                __DIR__.'/../resources/assets' => public_path('vendor/fpx'),
             ], 'assets');*/
 
 			// Publishing the translation files.
 			/*$this->publishes([
-                __DIR__.'/../resources/lang' => resource_path('lang/vendor/FPX'),
+                __DIR__.'/../resources/lang' => resource_path('lang/vendor/fpx'),
             ], 'lang');*/
 
 			// Registering package commands.
-			// $this->commands([]);
+			$this->commands([
+				UpdateBankListCommand::class
+			]);
 		}
 	}
 
@@ -51,7 +58,7 @@ class FPXServiceProvider extends ServiceProvider {
 	 */
 	public function register() {
 		// Automatically apply the package configuration
-		$this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'FPX');
+		$this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'fpx');
 
 		// Register the main class to use with the facade
 		$this->app->singleton('FPX', function () {
@@ -60,9 +67,12 @@ class FPXServiceProvider extends ServiceProvider {
 	}
 
 	public function configureComponents() {
-		$this->callAfterResolving(BladeCompiler::class, function () {
-			Blade::component('fpx-pay', PayComponent::class);
-			Blade::component('fpx::components.redirection-message', 'fpx-redirection-message');
-		});
+		Blade::component('fpx::components.pay', 'fpx-pay');
+	}
+
+	public function routeConfiguration() {
+		return [
+			'middleware' => Config::get('fpx.middleware')
+		];
 	}
 }

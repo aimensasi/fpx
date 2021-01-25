@@ -44,6 +44,10 @@ return [
 	 */
 	'direct_path' => env('FPX_DIRECT_PATH'),
 
+	/**
+	 * Middleware
+	 */
+	'middleware' => ['web'],
 
 	/**
 	 * FPX Version
@@ -76,11 +80,11 @@ return [
 	'certificate' => [
 		'uat' => [
 			'disk' => 'local', // S3 or Local. Don't put your certificate in public disk
-			'dir' => '/certificates',
+			'dir' => '/certificates/uat',
 		],
 		'production' => [
 			'disk' => 'local', // S3 or Local. Don't put your certificate in public disk
-			'dir' => '/certificates',
+			'dir' => '/certificates/prod',
 		]
 	],
 

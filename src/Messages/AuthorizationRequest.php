@@ -25,7 +25,7 @@ class AuthorizationRequest extends FPX {
 
 
 	/**
-	 * Request Url
+	 * Message Url
 	 */
 	public $url;
 
