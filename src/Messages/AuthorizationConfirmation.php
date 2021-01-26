@@ -1,31 +1,31 @@
-<?php 
+<?php
 
 namespace Aimensasi\FPX\Messages;
 
-use Aimensasi\FPX\FPX;
 use Aimensasi\FPX\Constant\Response;
+use Aimensasi\FPX\Contracts\Message as Contract;
 use Aimensasi\FPX\Exceptions\InvalidCertificateException;
 
-class AuthorizationConfirmation extends FPX{
+class AuthorizationConfirmation extends Message implements Contract {
 
 
-  /**
+	/**
 	 * Message code on the FPX side
 	 */
-  public const CODE = 'AC';
+	public const CODE = 'AC';
 
-  public const STATUS_SUCCESS = 'succeeded';
-  public const STATUS_FAILED = 'failed';
+	public const STATUS_SUCCESS = 'succeeded';
+	public const STATUS_FAILED = 'failed';
+	public const STATUS_PENDING = 'Pending';
 
-  public const SUCCESS_CODE = '00';
-  
+	public const STATUS_SUCCESS_CODE = '00';
+	public const STATUS_PENDING_CODE = '09';
 
-
-  /**
-	 * Handle the direct response from the FPX server
+	/**
+	 * handle a message
 	 *
-   * @param array $options
-   * @return \Aimensasi\FPX\FPX
+	 * @param array $options
+	 * @return mixed
 	 */
 	public function handle($options) {
 		$this->targetBankBranch = $options['fpx_buyerBankBranch'];
@@ -49,37 +49,48 @@ class AuthorizationConfirmation extends FPX{
 		$this->timestamp = $options['fpx_sellerTxnTime'];
 		$this->amount = $options['fpx_txnAmount'];
 		$this->currency = $options['fpx_txnCurrency'];
-    $this->checkSum = $options['fpx_checkSum'];
+		$this->checkSum = $options['fpx_checkSum'];
 
-    try {
-			$this->verifySign($this->checkSum, $this->formatData());
+		try {
+			$this->verifySign($this->checkSum, $this->format());
 
-			if ($this->debitResponseStatus == self::SUCCESS_CODE) {
+			if ($this->debitResponseStatus == self::STATUS_SUCCESS_CODE) {
 				return [
-          'status' => self::STATUS_SUCCESS,
-          'message' => 'Payment is successfull',
-          'transaction_id' => $this->foreignId,
-          'reference_id' => $this->reference,
-        ];
+					'status' => self::STATUS_SUCCESS,
+					'message' => 'Payment is successfull',
+					'transaction_id' => $this->foreignId,
+					'reference_id' => $this->reference,
+				];
+			} elseif ($this->debitResponseStatus == self::STATUS_PENDING_CODE) {
+				return [
+					'status' => self::STATUS_PENDING,
+					'message' => 'Payment Transaction Pending',
+					'transaction_id' => $this->foreignId,
+					'reference_id' => $this->reference,
+				];
 			}
 
-      return [
-        'status' => self::STATUS_FAILED,
-        'message' => Response::STATUS[$this->debitResponseStatus] ?? 'Payment Request Failed',
-        'transaction_id' => $this->foreignId,
-        'reference_id' => $this->reference,
-      ];
+			return [
+				'status' => self::STATUS_FAILED,
+				'message' => Response::STATUS[$this->debitResponseStatus] ?? 'Payment Request Failed',
+				'transaction_id' => $this->foreignId,
+				'reference_id' => $this->reference,
+			];
 		} catch (InvalidCertificateException $e) {
 			return [
-        'status' => self::STATUS_FAILED,
-        'message' => "Failed to verifiy the request origin",
-        'transaction_id' => $this->foreignId,
-        'reference_id' => $this->reference,
-      ];
+				'status' => self::STATUS_FAILED,
+				'message' => "Failed to verifiy the request origin",
+				'transaction_id' => $this->foreignId,
+				'reference_id' => $this->reference,
+			];
 		}
 	}
 
-  public function formatData() {
+	/**
+	 * Format data for checksum
+	 * @return string
+	 */
+	public function format() {
 		$list = collect([
 			$this->targetBankBranch ?? '',
 			$this->targetBankId ?? '',
@@ -103,7 +114,7 @@ class AuthorizationConfirmation extends FPX{
 			$this->amount ?? '',
 			$this->currency ?? '',
 		]);
-      
+
 		return $list->join('|');
 	}
 }

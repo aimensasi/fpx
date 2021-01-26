@@ -1,18 +1,24 @@
 <?php
 
-namespace Aimensasi\FPX;
+namespace Aimensasi\FPX\Messages;
 
-use Aimensasi\FPX\Constant\Type;
-use Aimensasi\FPX\Traits\VerifyCertificate;
-use Exception;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
+use Aimensasi\FPX\Traits\VerifyCertificate;
 
-class FPX {
+class Message {
 	use VerifyCertificate;
+
+	/**
+	 * Payment Business Model Flow
+	 * 01 = B2C
+	 * 02 = B2B1
+	 * 03 = B2B2
+	 */
+	public $flow;
+	public const FLOW_B2C = '01';
+	public const FLOW_B2B1 = '02';
+	public const FLOW_B2B2 = '03';
 
 	/**
 	 * Transaction Id For Each Payment
@@ -46,17 +52,6 @@ class FPX {
 	 * @see Aimensasi\FPX\Constant\Type;
 	 */
 	public $type;
-
-	/**
-	 * Payment Business Model Flow
-	 * 01 = B2C
-	 * 02 = B2B1
-	 * 03 = B2B2
-	 */
-	public $flow;
-	public const FLOW_B2C = '01';
-	public const FLOW_B2B1 = '02';
-	public const FLOW_B2B2 = '03';
 
 	/**
 	 * FPX used Verision
@@ -151,7 +146,10 @@ class FPX {
 	public $debitResponseNumber;
 	public $debitResponseStatus;
 
-
+	/**
+	 * Response checksum
+	 */
+	public $checkSum;
 
 	public function __construct() {
 		$this->id = Str::random(12);

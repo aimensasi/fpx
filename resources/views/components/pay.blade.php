@@ -5,7 +5,7 @@
 	<input type="hidden" name="datetime" value="{{ $datetime }}" />
 	<input type="hidden" name="product_description" value="{{ $productDescription }}" />
 	<input type="hidden" name="currency" value="MYR" />
-	<input type="hidden" name="amount" value="{{ $amount }}" />
+	<input type="hidden" name="amount" value="{{ ($testMode ?? null) ? '1.00' : $amount }}" />
 	<input type="hidden" name="customer_name" value="{{ $customerName }}" />
 	<input type="hidden" name="customer_email" value="{{ $customerEmail }}" />
 

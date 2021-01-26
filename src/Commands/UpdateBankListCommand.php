@@ -38,8 +38,6 @@ class UpdateBankListCommand extends Command {
 	public function handle() {
 		$handler = new BankEnquiry;
 
-		$this->seedAllBanks($handler);
-
 		$dataList = $handler->getData();
 		$dataStr = $handler->stringifyData($dataList);
 
@@ -77,18 +75,6 @@ class UpdateBankListCommand extends Command {
 			]);
 			$this->error("request failed due to" . $e->getMessage());
 			throw $e;
-		}
-	}
-
-	public function seedAllBanks(BankEnquiry $handler){
-		$banks = $handler->getBanks();	
-
-		foreach($banks as $bank){
-			Bank::updateOrCreate(['bank_id' => $bank['bank_id']], [
-				'status' => 'Offline',
-				'name' => $bank['name'],
-				'short_name' => $bank['short_name']
-			]);
 		}
 	}
 }

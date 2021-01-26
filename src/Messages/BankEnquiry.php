@@ -2,13 +2,12 @@
 
 namespace Aimensasi\FPX\Messages;
 
-use Aimensasi\FPX\Exceptions\InvalidCertificateException;
-use Aimensasi\FPX\FPX;
+use Aimensasi\FPX\Contracts\Message as Contract;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 
-class BankEnquiry extends FPX {
+class BankEnquiry extends Message implements Contract {
 
 	/**
 	 * Message code on the FPX side
@@ -29,6 +28,15 @@ class BankEnquiry extends FPX {
 			Config::get('fpx.urls.uat.bank_enquiry');
 	}
 
+	/**
+	 * handle a message
+	 *
+	 * @param array $options
+	 * @return mixed
+	 */
+	public function handle(array $options) {
+		# code...
+	}
 
 	/**
 	 * get request data from
@@ -40,7 +48,7 @@ class BankEnquiry extends FPX {
 			'fpx_msgToken' => urlencode($this->flow),
 			'fpx_sellerExId' => urlencode($this->exchangeId),
 			'fpx_version' => urlencode($this->version),
-			'fpx_checkSum' => $this->getCheckSum($this->formatRequestData()),
+			'fpx_checkSum' => $this->getCheckSum($this->format()),
 		]);
 	}
 
@@ -254,8 +262,8 @@ class BankEnquiry extends FPX {
 		]);
 
 		$banks = $banks->merge($this->getTestingBanks());
-		
-		if(is_null($id)){
+
+		if (is_null($id)) {
 			return $banks;
 		}
 
@@ -266,8 +274,6 @@ class BankEnquiry extends FPX {
 		if (App::environment('production')) {
 			return [];
 		}
-
-		
 
 		return [
 			[
@@ -411,7 +417,11 @@ class BankEnquiry extends FPX {
 		];
 	}
 
-	public function formatRequestData() {
+	/**
+	 * Format data for checksum
+	 * @return string
+	 */
+	public function format() {
 		$list = collect([
 			$this->flow ?? '',
 			$this->type ?? '',

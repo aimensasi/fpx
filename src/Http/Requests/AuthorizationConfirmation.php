@@ -3,12 +3,11 @@
 namespace Aimensasi\FPX\Http\Requests;
 
 use Aimensasi\FPX\Messages\AuthorizationConfirmation as AuthorizationConfirmationMessage;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AuthorizationConfirmation extends FormRequest {
-  
-  /**
+
+	/**
 	 * Determine if the user is authorized to make this request.
 	 *
 	 * @return bool
@@ -23,9 +22,7 @@ class AuthorizationConfirmation extends FormRequest {
 	 * @return array
 	 */
 	public function rules() {
-		return [
-
-    ];
+		return [];
 	}
 
 
@@ -34,10 +31,7 @@ class AuthorizationConfirmation extends FormRequest {
 	 */
 	public function handle() {
 		$data = $this->all();
-		$request = new AuthorizationConfirmationMessage;
 
-		$response = $request->handle($data);
-	
-		return $response;
+		return (new AuthorizationConfirmationMessage)->handle($data);
 	}
 }

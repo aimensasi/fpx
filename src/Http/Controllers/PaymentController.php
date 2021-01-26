@@ -5,7 +5,6 @@ namespace Aimensasi\FPX\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Aimensasi\FPX\Messages\AuthorizationRequest;
-use Aimensasi\FPX\Http\Requests\AuthorizationConfirmation;
 
 class PaymentController extends Controller {
 
@@ -15,7 +14,7 @@ class PaymentController extends Controller {
 	 * @param Request $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function requestAuthorization(Request $request) {
+	public function handle(Request $request) {
 		return view('fpx::redirect_to_bank', [
 			'request' => (new AuthorizationRequest)->handle($request->all()),
 		]);
