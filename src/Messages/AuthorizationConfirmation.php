@@ -72,14 +72,14 @@ class AuthorizationConfirmation extends Message implements Contract {
 
 			return [
 				'status' => self::STATUS_FAILED,
-				'message' => Response::STATUS[$this->debitResponseStatus] ?? 'Payment Request Failed',
+				'message' => @Response::STATUS[$this->debitResponseStatus] ?? 'Payment Request Failed',
 				'transaction_id' => $this->foreignId,
 				'reference_id' => $this->reference,
 			];
 		} catch (InvalidCertificateException $e) {
 			return [
 				'status' => self::STATUS_FAILED,
-				'message' => "Failed to verifiy the request origin",
+				'message' => "Failed to verify the request origin",
 				'transaction_id' => $this->foreignId,
 				'reference_id' => $this->reference,
 			];

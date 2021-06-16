@@ -16,6 +16,11 @@ Then run the publish command to publish the config files and support controller
 php artisan vendor:publish --provider="Aimensasi\FPX\FPXServiceProvider"
 ```
 
+This will generate the following files
+
+* The config file with default setup for you to override `fpx.php`
+* The controller that will receive payment response and any host-to-host events `Http/Controllers/FPX/Controller.php`
+
 ## Setups
 
 1. Add your redirect urls and your Seller and Exchange Id to the `.env` file.
@@ -69,7 +74,7 @@ php artisan fpx:banks
  ```
 
 
-Once the banks are seeded, you can add the pay component to your view.
+2. Add one the `x-fpx-pay` component with the following attributes
 
 ``` php
  <x-fpx-pay
@@ -93,6 +98,39 @@ During testing, you can use the `test-mode` attribute to override the provided a
 		product-description="Salary Invoice"
 		test-mode>
 ```
+
+3. Handle the payment response in `Http/Controllers/FPX/Controller.php`
+
+``` php
+
+	/**
+	 * This will be called after the user approve the payment
+	 * on the bank side
+	 * 
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function callback(Request $request) {
+		$response = $request->handle();
+
+		// Update your order status
+	}
+
+	/**
+	 * This will handle any direct call from FPX
+	 * 
+	 * @param Request $request
+	 * @return string
+	 */
+	public function webhook(Request $request) {
+		$response = $request->handle();
+
+		// Update your order status
+
+		return 'OK';
+	}
+```
+
 
 
 ### Changelog
