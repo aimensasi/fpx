@@ -14,7 +14,7 @@ return [
 	/**
 	 * The Merchant Seller ID
 	 */
-	'seller_id' => env('FPX_Seller_ID'),
+	'seller_id' => env('FPX_SELLER_ID'),
 
 	/**
 	 * indirect url used by FPX to direct the user back to your platform after a transaction is completed
