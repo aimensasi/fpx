@@ -28,4 +28,10 @@ class Bank extends Model {
 	public function isOffline() {
 		return $this->status === self::STATUS_OFFLINE;
 	}
+
+	public function getNameAttribute()
+	{
+
+		return $this->short_name . ($this->isOffline() ? " (offline)" : '');
+	}
 }

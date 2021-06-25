@@ -57,6 +57,14 @@ class FPXServiceProvider extends ServiceProvider {
 				__DIR__ . '/../stubs/Controller.php' => app_path('Http/Controllers/FPX/Controller.php'),
 			], 'fpx-controller');
 
+			$this->publishes([
+				__DIR__ . '/../public/assets' => public_path('assets/FPX'),
+			], 'fpx-assets');
+
+			$this->publishes([
+				__DIR__ . '/../resources/views/payment.blade.php' => resource_path('views/FPX/payment.blade.php'),
+			], 'fpx-views');
+
 			$this->commands([
 				UpdateBankListCommand::class
 			]);

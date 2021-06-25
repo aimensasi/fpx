@@ -18,8 +18,10 @@ php artisan vendor:publish --provider="Aimensasi\FPX\FPXServiceProvider"
 
 This will generate the following files
 
-* The config file with default setup for you to override `fpx.php`
-* The controller that will receive payment response and any host-to-host events `Http/Controllers/FPX/Controller.php`
+- The config file with default setup for you to override `fpx.php`
+- The controller that will receive payment response and any host-to-host events `Http/Controllers/FPX/Controller.php`
+- The assets directory in public directory.
+- The view file with default html for you to override `payment.blade.php`. Note do not change form action URL `fpx.payment.auth.request`.
 
 ## Setups
 
@@ -35,7 +37,14 @@ FPX_EXCHANGE_ID=
 FPX_SELLER_ID=
 ```
 
-2. After generating your certificates add them to your app. By default, we look for the certificates inside the following directives.
+2. You can skip this steps, if you have already generated CSR.
+   Visit `fpx/csr/request` path in browser to generate CSR.
+   ` http://127.0.0.1:8000/fpx/csr/request `
+   Fill the form and click on `GENERATE`. On right side textarea will be generated with openSSL code.
+   Download openSSL from `https://www.openssl.org/` if you don't have installed it.
+   Run openssl code to generate CSR. Submit this CSR to FPX service provider to get the Exvhange Certificates.
+
+3. After generating your certificates add them to your app. By default, we look for the certificates inside the following directives. create `/certificates/uat` and `/certificates/prod` directories in `storage/app/public` directory and paste your certificates there.
 
 ```php
 'certificates' => [
@@ -58,25 +67,23 @@ You can override the defaults by updating the config file.
 php artisan migrate
 ```
 
-
 ## Usage
 
 1. First run the following commands to seed the banks list.
 
-``` bash
+```bash
 php artisan fpx:banks
 ```
 
- you should schedule the fpx:banks Artisan command to run daily:
+you should schedule the fpx:banks Artisan command to run daily:
 
- ```php
- $schedule->command('fpx:banks')->daily();
- ```
-
+```php
+$schedule->command('fpx:banks')->daily();
+```
 
 2. Add one the `x-fpx-pay` component with the following attributes
 
-``` php
+```php
  <x-fpx-pay
 		:reference-id="$invoice->id"
 		:datetime="$invoice->created_at->format('Ymdhms')"
@@ -88,7 +95,7 @@ php artisan fpx:banks
 
 During testing, you can use the `test-mode` attribute to override the provided amount to 'MYR 1.00'
 
-``` php
+```php
  <x-fpx-pay
 		:reference-id="$invoice->id"
 		:datetime="$invoice->created_at->format('Ymdhms')"
@@ -101,12 +108,12 @@ During testing, you can use the `test-mode` attribute to override the provided a
 
 3. Handle the payment response in `Http/Controllers/FPX/Controller.php`
 
-``` php
+```php
 
 	/**
 	 * This will be called after the user approve the payment
 	 * on the bank side
-	 * 
+	 *
 	 * @param Request $request
 	 * @return Response
 	 */
@@ -118,7 +125,7 @@ During testing, you can use the `test-mode` attribute to override the provided a
 
 	/**
 	 * This will handle any direct call from FPX
-	 * 
+	 *
 	 * @param Request $request
 	 * @return string
 	 */
@@ -131,7 +138,9 @@ During testing, you can use the `test-mode` attribute to override the provided a
 	}
 ```
 
+You can visit <a href='http://127.0.0.1:8000/fpx/initiate/payment'>http://127.0.0.1:8000/fpx/csr/request</a> for the payment flow demo.
 
+You can also overwrite `payment.blade.php` with your custom design to integrate with your details. but do not change `name` attribute of html controls and `action` URL of form.
 
 ### Changelog
 
