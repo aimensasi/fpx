@@ -42,7 +42,7 @@ FPX_SELLER_ID=
    ` http://127.0.0.1:8000/fpx/csr/request `
    Fill the form and click on `GENERATE`. On right side textarea will be generated with openSSL code.
    Download openSSL from `https://www.openssl.org/` if you don't have installed it.
-   Run openssl code to generate CSR. Submit this CSR to FPX service provider to get the Exvhange Certificates.
+   Run openssl code to generate CSR. Submit this CSR to FPX service provider to get the Exchange Certificates.
 
 3. After generating your certificates add them to your app. By default, we look for the certificates inside the following directives. create `/certificates/uat` and `/certificates/prod` directories in `storage/app/public` directory and paste your certificates there.
 
