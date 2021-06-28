@@ -152,7 +152,6 @@
     </script>
     <script>
         window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')
-
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" crossorigin="anonymous">
     </script>
@@ -173,16 +172,16 @@
                         if (form.checkValidity() === false) {
 
                         } else {
-							var exchangeId = common_name.value.trim().toUpperCase();
+                            var exchangeId = common_name.value.trim().toUpperCase();
                             var req =
                                 'openssl req -new -newkey rsa:' + key_size.value +
                                 ' -nodes -out ' + exchangeId +
                                 '.csr -keyout ' +
                                 exchangeId + '.key -subj "/C=' +
                                 country.value +
-                                ' /ST=' + state.value + ' /L=' + city + ' /O=' +
-                                organization.value + ' /OU=' + org_unit.value + 
-								' /CN=' + exchangeId + '"';
+                                '/ST=' + state.value + '/L=' + city.value + '/O=' +
+                                organization.value + '/OU=' + org_unit.value +
+                                '/CN=' + exchangeId + '"';
 
                             $("#csr-panel").html($("#descriptionFor_infotext").html()
                                     .replaceAll('###FILE###', common_name.value
@@ -202,7 +201,6 @@
             if ($("#descriptionFor_" + id).length)
                 $("#csr-panel").html($("#descriptionFor_" + id).html());
         })
-
     </script>
 </body>
 
