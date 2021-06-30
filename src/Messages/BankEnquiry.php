@@ -102,7 +102,7 @@ class BankEnquiry extends Message implements Contract {
 	 *
 	 */
 	public function parseBanksList($response) {
-		if ($response == 'ERROR') {
+		if ($response == 'ERROR' || !$response) {
 			return false;
 		}
 

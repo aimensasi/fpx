@@ -26,7 +26,7 @@
             @csrf
             <input type="hidden" name="flow" value="01" />
             <input type="hidden" name="reference_id" value="{{ uniqid() }}" />
-            <input type="hidden" name="datetime" value="{{ Carbon\Carbon::now() }}" />
+
             {{ implode(',', $errors->all()) }}
             <div class="row">
                 <div class="col-md-4 order-md-2 mb-4">
@@ -84,7 +84,7 @@
                         <div class="mb-3">
                             <label for="amount">Amount</label>
                             <input type="name" class="form-control" id="amount" name="amount" placeholder="1.00"
-                                required>
+                                value="" required>
                             <div class="invalid-feedback">
                                 Please enter a valid amount.
                             </div>
@@ -92,7 +92,7 @@
 
                         <div class="mb-3">
                             <label for="customer_email">Email</label>
-                            <input type="email" class="form-control" id="customer_email" name="customer_email"
+                            <input type="email" class="form-control" id="customer_email" name="customer_email" value=""
                                 placeholder="you@example.com" required>
                             <div class="invalid-feedback">
                                 Please enter a valid email address.
@@ -102,7 +102,7 @@
                         <div class="mb-3">
                             <label for="fpx_buyerTelephone">Telephone</label>
                             <input type="tel " class="form-control" id="fpx_buyerTelephone" name="fpx_buyerTelephone"
-                                placeholder="01XXXXXXXX" required>
+                                value="" placeholder="01XXXXXXXX" required>
                             <div class="invalid-feedback">
                                 Please enter a valid telephone no.
                             </div>
@@ -127,7 +127,6 @@
     </script>
     <script>
         window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')
-
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" crossorigin="anonymous">
     </script>
@@ -152,7 +151,6 @@
                 });
             }, false);
         })();
-
     </script>
 </body>
 
