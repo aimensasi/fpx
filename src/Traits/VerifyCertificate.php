@@ -24,7 +24,7 @@ trait VerifyCertificate {
 		list($disk, $dir) = $this->getCertLocation();
 
 		$signature = $this->decodeSignature($checkSum);
-		$certificate = Storage::disk($disk)->get($dir . '/' . 'certificate.cer');
+		$certificate = Storage::disk($disk)->get($dir . '/' . $this->exchangeId.'.cer');
 
 		if ($this->isExpired($certificate) || !$this->isValid($certificate, $signature, $data)) {
 			throw new InvalidCertificateException;
@@ -39,7 +39,7 @@ trait VerifyCertificate {
 	 *
 	 * @param string $certificate
 	 * @param string $signature
-	 * @param array $data
+	 * @param array|string $data
 	 *
 	 * @return bool
 	 */
@@ -89,7 +89,7 @@ trait VerifyCertificate {
 		$disk = Config::get('fpx.certificates.uat.disk');
 		$dir = Config::get('fpx.certificates.uat.dir');
 
-		
+
 		if (App::environment('production')) {
 			$disk = Config::get('fpx.certificates.production.disk');
 			$dir = Config::get('fpx.certificates.production.dir');

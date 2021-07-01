@@ -73,7 +73,7 @@ class UpdateBankListCommand extends Command {
 			logger("Bank Updating failed", [
 				'message' => $e->getMessage(),
 			]);
-			$this->error("request failed due to" . $e->getMessage());
+			$this->error("request failed due to " . $e->getMessage());
 			throw $e;
 		}
 	}
